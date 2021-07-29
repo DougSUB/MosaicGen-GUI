@@ -81,7 +81,14 @@ namespace MosaicGen.Classes
 		//return a count of images in active directory
 		private int DirectoryImageCount()
 		{
-			return Directory.GetFiles(MosaicDirectory).Length;
+			int countjpg = (from file in Directory.EnumerateFiles(MosaicDirectory, "*.jpg", SearchOption.AllDirectories)
+							select file).Count();
+			int countjpeg = (from file in Directory.EnumerateFiles(MosaicDirectory, "*.jpeg", SearchOption.AllDirectories)
+							 select file).Count();
+			int countpng = (from file in Directory.EnumerateFiles(MosaicDirectory, "*.png", SearchOption.AllDirectories)
+							select file).Count();
+			int totalcount = countjpg + countjpeg + countpng;
+			return totalcount;
 		}
 
 		//return dictionary with string x,y coordinate index and color
@@ -130,7 +137,8 @@ namespace MosaicGen.Classes
 				int scale = 1;
 				int width = temp.Width / scale;
 				int height = temp.Height / scale;
-				while (width * height > DirectoryImageCount())
+				int imageCount = DirectoryImageCount();
+				while (width * height > imageCount)
 				{
 					scale++;
 					width = temp.Width / scale;
